@@ -148,7 +148,7 @@ def main():
 
     train_log = TrainLog(args.train_id)
 
-    model = NnHalfKPCuda(128).to(DEVICE)
+    model = NnBoard768(256).to(DEVICE)
 
     data_path = pathlib.Path(args.data_root)
     paths = list(map(str, data_path.glob("*.bin")))
