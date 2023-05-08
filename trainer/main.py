@@ -9,6 +9,7 @@ from dataloader import BatchLoader
 from model import (
     NnBoard768Cuda,
     NnBoard768,
+    SquaredNnBoard768,
     NnHalfKA,
     NnHalfKACuda,
     NnHalfKP,
@@ -123,6 +124,7 @@ def main():
     parser.add_argument(
         "--data-root", type=str, help="Root directory of the data files"
     )
+    parser.add_argument("--nodes", type=int, help="Hidden layer size")
     parser.add_argument("--train-id", type=str, help="ID to save train logs with")
     parser.add_argument("--lr", type=float, help="Initial learning rate")
     parser.add_argument("--epochs", type=int, help="Epochs to train for")
@@ -148,13 +150,13 @@ def main():
 
     train_log = TrainLog(args.train_id)
 
-    model = NnBoard768(256).to(DEVICE)
+    model = NnBoard768(args.nodes).to(DEVICE)
 
     data_path = pathlib.Path(args.data_root)
     paths = list(map(str, data_path.glob("*.bin")))
     dataloader = BatchLoader(paths, model.input_feature_set(), args.batch_size)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     train(
         model,
