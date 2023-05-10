@@ -150,7 +150,7 @@ def main():
 
     train_log = TrainLog(args.train_id)
 
-    model = NnBoard768(args.nodes).to(DEVICE)
+    model = SquaredNnBoard768(args.nodes).to(DEVICE)
 
     data_path = pathlib.Path(args.data_root)
     paths = list(map(str, data_path.glob("*.bin")))

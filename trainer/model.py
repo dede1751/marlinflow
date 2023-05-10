@@ -32,7 +32,7 @@ class NnBoard768(torch.nn.Module):
 class SquaredNnBoard768(torch.nn.Module):
     def __init__(self, ft_out: int):
         super().__init__()
-        self.perspective = torch.nn.Linear(768, ft_out)
+        self.ft = torch.nn.Linear(768, ft_out)
         self.out = torch.nn.Linear(ft_out * 2, 1)
 
     def forward(self, batch: Batch):
@@ -45,8 +45,8 @@ class SquaredNnBoard768(torch.nn.Module):
             nstm_indices, batch.values, (batch.size, 768)
         ).to_dense()
 
-        stm_pov = self.perspective(board_stm_sparse)
-        nstm_pov = self.perspective(board_nstm_sparse)
+        stm_pov = self.ft(board_stm_sparse)
+        nstm_pov = self.ft(board_nstm_sparse)
 
         x = torch.clamp(torch.cat((stm_pov, nstm_pov), dim=1), 0, 1)
         hidden = x * x
