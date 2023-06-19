@@ -143,6 +143,12 @@ def main():
         default=None,
         help="The epoch learning rate will be dropped",
     )
+    parser.add_argument(
+        "--resume",
+        type=str,
+        default=None,
+        help="Path to a saved network to resume training",
+    )
     args = parser.parse_args()
 
     assert args.train_id is not None
@@ -151,6 +157,8 @@ def main():
     train_log = TrainLog(args.train_id)
 
     model = SquaredNnBoard768(args.nodes).to(DEVICE)
+    if args.resume is not None:
+        model.load_state_dict(torch.load(args.resume))
 
     data_path = pathlib.Path(args.data_root)
     paths = list(map(str, data_path.glob("*.bin")))
